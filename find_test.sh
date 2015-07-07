@@ -8,25 +8,25 @@
 
 TEST_NAME=$1
 GAIA="$HOME/Desktop/oliverthor/git/gaia/tests/python/gaia-ui-tests"
-#GAIATEST="/gaiatest/tests/functional"
+GAIATEST="gaiatest/tests/functional"
 
 function find_test_dir () {
   
-  echo "find_test_dir"
-  #echo $GAIA$GAIATEST
+  # echo "find_test_dir"
+  # echo $GAIA$GAIATEST
   echo "Looking for: $1"
   cd $GAIA
-#$GAIATEST
+  #$GAIATEST
   echo pwd
-#  MANIFEST= grep -R $1 .
-  MANIFEST= find . | grep $1
+  #  MANIFEST= grep -R $1 .
+  MANIFEST= find $GAIATEST | grep $1 | grep y$
   
   if [ ! -z $MANIFEST ]; then
     echo $MANIFEST
   fi
   
 }
-
-echo "starting testdir from test"
-find_test_dir $1
-echo "ending test"
+for var in "$@"; do
+    find_test_dir $var
+done
+echo "Done"

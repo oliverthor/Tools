@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Author:	Roland Kunkel
-# Edited:	Oliver Nelson
+# Past Authors:		Roland Kunkel
+# Current Author:	Oliver Nelson
 # Date: 	8-12-14 -- RK
 #		10-15-14 -- ON
-# Last Update:	12-23-14 -- ON
+# Last Update:	01-17-15 -- ON
 
 # Purpose:	
 #
@@ -39,12 +39,16 @@
 #		2014-12-19 # added intro to script to help guide functionality
 #			     user input flow to perform script without arguments given
 #		2014-12-23 # added credentials request for pvt: does not elegantly break with improper login yet
+#		2015-01-12 # added support for 3.0 builds
+#		2015-01-16 # added framework for a boot image input flag, determining to copy the boot from Assets or not
 		
 
 ### Variables
 # Security 
-USER=''
-PASS=''
+#USER=''
+#PASS=''
+USER='onelson@qanalydocs.com'
+PASS='xYaUSsyYfyCV98nm'
 
 # Generic
 BUILDID=''
@@ -52,6 +56,12 @@ GAIA='gaia.zip'
 IMAGE='flame-kk.zip'
 SOURCES='sources.xml'
 BOOT_IMAGE='/mnt/builds/Needed_Scripts/Assets/boot.img'
+#LC_BOOT_IMAGE=
+
+#trying to set a boot flag
+#BOOT_PATH='/mnt/builds/Needed_Scripts/Assets/boot.img'
+#BOOT_CONFIRM= false
+
 FLASH_SCRIPT='/mnt/builds/Needed_Scripts/flash_Gg.sh'
 
 DIR_LOC=$HOME'/Desktop/builds'
@@ -60,13 +70,27 @@ CUR_DIR=$DIR_SER
 #BUILD_ID='latest'
 #string to parse into for build id: 2014/12/2014-12-09-17-01-21/
 
-# MC_KK 2.2
-MC_KK_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-central-flame-kk/latest/'
-MC_KK_B2G='b2g-37.0a1.en-US.android-arm.tar.gz'
-MC_EN_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-central-flame-kk-eng/latest/'
+# MC_KK 3.0
+#MC_KK_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-central-flame-kk/latest/'
+TO_KK_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-central-flame-kk/latest/'
+TO_KK_B2G='b2g-42.0a1.en-US.android-arm.tar.gz'
+#TO_KK_B2G='b2g-40.0a1.en-US.android-arm.tar.gz'
+#TO_KK_B2G='b2g-39.0a1.en-US.android-arm.tar.gz'
+TO_EN_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-central-flame-kk-eng/latest/'
 #MC_KK_DIR_SER='/mnt/builds/Flame/Flame_KK/2.2/Central'
 #MC_EN_DIR_SER='/mnt/builds/Flame/Flame_KK/2.2/Engineering'
-MC_KK='/Flame/Flame_KK/2.2/Central'
+TO_KK='/Flame/Flame_KK/3.0/Central'
+TO_EN='/Flame/Flame_KK/3.0/Engineering'
+
+
+# MC_KK 2.2
+#MC_KK_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-central-flame-kk/latest/'
+MC_KK_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-b2g37_v2_2-flame-kk/latest'
+MC_KK_B2G='b2g-37.0.en-US.android-arm.tar.gz'
+MC_EN_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-b2g37_v2_2-flame-kk-eng/latest/'
+#MC_KK_DIR_SER='/mnt/builds/Flame/Flame_KK/2.2/Central'
+#MC_EN_DIR_SER='/mnt/builds/Flame/Flame_KK/2.2/Engineering'
+MC_KK='/Flame/Flame_KK/2.2/b2g37'
 MC_EN='/Flame/Flame_KK/2.2/Engineering'
 
 
@@ -86,6 +110,9 @@ LC_KK_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozil
 LC_KK_B2G='b2g-32.0.en-US.android-arm.tar.gz'
 #LC_KK_DIR_SER='/mnt/builds/Flame/Flame_KK/2.0' #'$HOME/Desktop/oliverthor/builds/2.0' 
 LC_KK='/Flame/Flame_KK/2.0'
+
+# TO Experiment
+#TO_PATH='https://pvtbuilds.mozilla.org/pvt/mozilla.org/b2gotoro/nightly/mozilla-central-flame-kk/"
 
 # Build Path Container
 #BUILD_PATHS[0]=	$MC_KK_PATH
@@ -165,11 +192,32 @@ function clean_kk() {
 
   # replace old boot
   #cp $BOOT_IMAGE $DIRNAME'/b2g-distro/out/target/product/flame'
+  
   # add flash script
   cp $FLASH_SCRIPT $DIRNAME
 }
 
 ### Pull Build Functions
+function pull_3_0() {
+  # Mozilla Master Central KK
+  #cd '/mnt/builds/Flame/Flame_KK/3.0/Central
+  cd $CUR_DIR$TO_KK
+  pwd
+  echo "Starting KK v3.0"
+  assemble_build $TO_KK_PATH $TO_KK_B2G
+
+}
+
+function pull_3_0E() {
+  # Mozilla Master Central KK
+  #cd '/mnt/builds/Flame/Flame_KK/3.0/Central
+  cd $CUR_DIR$TO_EN
+  pwd
+  echo "Starting KK v3.0 [Nightly Engineering]"
+  assemble_build $TO_EN_PATH $TO_KK_B2G
+
+}
+
 function pull_2_2() {
     # Mozilla Master Central KK
     #cd '/mnt/builds/Flame/Flame_KK/2.2/Central'
@@ -238,36 +286,53 @@ function pull_builds_args()
 	'2.0') pull_2_0;;
 	'2.1') pull_2_1;;
 	'2.1E') pull_2_1E;;
+	'2.1TB') pull_2_1TB;;
 	'2.2') pull_2_2;;
 	'2.2E') pull_2_2E;;
-	'2.1TB') pull_2_1TB;;
+	'3.0') pull_3_0;;
+	'3.0E') pull_3_0E;;
 	'all')
-	echo "all -- pulling all builds: 2.2, 2.2E, 2.1, 2.1E, 2.0"
+	echo "all -- pulling all builds: 3.0, 3.0E, 2.2, 2.2E, 2.1, 2.1E, 2.0"
+	    pull_3_0
+	    pull_3_0E
 	    pull_2_2
 	    pull_2_2E
 	    pull_2_1
 	    pull_2_1E
 	    pull_2_0
 	    ;;
+	'3.0X')
+	    echo "3.0X -- pulling all 3.0: user + eng"
+	    pull_3_0
+	    pull_3_0E
+	    ;;
+	'2.2X')
+	    echo "2.2X -- pulling all 2.2: user + eng"
+	    pull_2_2
+	    pull_2_2E
+	    ;;
 	'smoke')
-	echo "smoke -- pulling builds for smoketeam: 2.2, 2.1, 2.2E, 2.1E"
+	echo "smoke -- pulling builds for smoketeam: latest master [user + eng], 2.2, 2.1, 2.0"
+	    pull_3_0
+	    pull_3_0E
 	    pull_2_2
 	    pull_2_1
-	    pull_2_2E
-	    pull_2_1E
+	    pull_2_0
 	    ;;
 	'user')
 	echo "user -- pulling builds for test team: 2.2, 2.1, 2.0"
+	    pull_3_0
 	    pull_2_2
 	    pull_2_1
 	    pull_2_0
 	    ;;
 	'eng'*)
 	echo "engineering -- pulling eng. builds: 2.2E, 2.1E"
+	    pull_3_0E
 	    pull_2_2E
 	    pull_2_1E
 	    ;;
-	*) echo "No Argument: provide '2.0', '2.1','2.2', or '2.2E', '2.1E or '2.1TB' to pull a particular build.";;
+	*) echo "No Argument: provide '3.0','2.0', '2.1','2.2', or '2.2E', '2.1E or '2.1TB' to pull a particular build.";;
     esac
 }
 
@@ -275,22 +340,26 @@ function displayIntro()
 {
   echo "GET BUILDS"
   echo "**********"
-  echo "Need pvt login credentials:"
-  echo "---------------------------"
-  echo "Username? "
-  read USER
-  echo "Password? "
-  read -s PASS
+  
+  if [ -z "$USER" ]; then
+    echo "Need pvt login credentials:"
+    echo "---------------------------"
+    read -p 	"Username: " USER
+    read -s -p 	"Password: " PASS
+  else
+    echo "Using credentials of $USER"
+  fi
   echo "****************************************************************"
   echo "#.# -- pull down latest of that respective build (2.2, 2.1, 2.0, 2.2E, 2.1E, 2.1TB)"
-  echo "smoke -- latest 2.2, 2.1, 2.2E and 2.1E"
-  echo "all -- latest 2.2, 2.1, 2.0, 2.2E and 2.1E"
-  echo "user -- latest 2.2, 2.1 and 2.0"
-  echo "eng -- latest 2.2 Engineering and 2.1 Engineering [from nightly]"
+  echo "smoke -- latest 3.0, 2.2, 2.1, 2.2E and 2.1E"
+  echo "all -- latest 3.0, 2.2, 2.1, 2.0, 2.2E and 2.1E"
+  echo "user -- latest 3.0, 2.2, 2.1 and 2.0"
+  echo "eng -- latest 3.0, 2.2 and 2.1 Engineering [from nightly]"
   echo "----------------------------------------------------------------"
   echo "Flags:"
   echo "-s : download to server [default]"
   echo "-l : download to local machine [/home/flash/desktop/builds]"
+  echo "-b : copy the boot image to build folder [incomplete]"
   echo "----------------------------------------------------------------"
 
 }
@@ -311,26 +380,31 @@ runTime=$(date +"%s")
 #Get_Opts -- function wasn't working?
 
 CUR_DIR=$DIR_SER
-while getopts :ls opt; do
+while getopts :lsb opt; do
   case $opt in
   l) echo -e "L: Download Paths Set to Local Machine -- $DIR_LOC" #set local download paths
     
-  # create local directories
-  mkdir -p $DIR_LOC$MC_KK
-  mkdir -p $DIR_LOC$MC_EN
-  mkdir -p $DIR_LOC$B34_KK
-  mkdir -p $DIR_LOC$B34_EN
-  mkdir -p $DIR_LOC$LC_KK
-  CUR_DIR=$DIR_LOC
+    # create local directories
+    mkdir -p $DIR_LOC$MC_KK
+    mkdir -p $DIR_LOC$MC_EN
+    mkdir -p $DIR_LOC$B34_KK
+    mkdir -p $DIR_LOC$B34_EN
+    mkdir -p $DIR_LOC$LC_KK
+    CUR_DIR=$DIR_LOC
   
-  ;;
+    ;;
   s) echo "S: Download Paths Set to Server -- $DIR_SER" #set server download paths
-  CUR_DIR=$DIR_SER
-  ;;
+    CUR_DIR=$DIR_SER
+    ;;
+  b) echo "B: Copy Boot Image" #copy the boot image, otherwise will not
+     #BOOT_IMAGE= $BOOT_PATH
+     #echo "Boot Image set to $BOOT_CONFIRM, copying boot image to build"
+     ;;
   *)
   ;;
   esac
 done
+
 # handle args after opts
 shift $(($OPTIND - 1))
 first_arg=$1
@@ -370,6 +444,7 @@ if [[ "$RUN_BUILDS" = "y" ]]; then
   if [[ "$CUR_DIR" = "$DIR_LOC" ]]; then
     #echo "cur dir is equal to local"
     if [ ! -d '/home/flash/Desktop/builds/' ]; then
+      mkdir -p $DIR_LOC$TO_KK
       mkdir -p $DIR_LOC$MC_KK
       mkdir -p $DIR_LOC$MC_EN
       mkdir -p $DIR_LOC$B34_KK
