@@ -14,10 +14,8 @@ function find_test_dir () {
   
   # echo "find_test_dir"
   # echo $GAIA$GAIATEST
-  echo "Looking for: $1"
+  # echo "Looking for: $1"
   cd $GAIA
-  #$GAIATEST
-  echo pwd
   #  MANIFEST= grep -R $1 .
   MANIFEST= find $GAIATEST | grep $1 | grep y$
   
