@@ -1,0 +1,36 @@
+Contacts |
+---------
+
+07/13/2015
+
+Device: Aries 2.5
+BuildID: 20150713103207
+Gaia: a7439b6ca88264734171ff5ea0b6a0b8df3f258e
+Gecko: 38d03bf4616e
+Gonk: 2916e2368074b5383c80bf5a0fba3fc83ba310bd
+Version: 42.0a1 (2.5) 
+Firmware Version: D5803_23.1.A.1.28_NCB.ftf
+User Agent: Mozilla/5.0 (Mobile; rv:42.0) Gecko/42.0 Firefox/42.0
+
+Focus:
+Testing around Contact Photos when matched with phone-compatible image types.
+
+Gallery Valid Filetypes:
+* GIF
+* BMP
+* PNG
+* JPEG
+
+Resolutions?:
+* Small (<100px)
+* Medium (100-1000px)
+* Large (>1000px)
+
+Tester:
+Oliver
+
+Time Begin:
+2:22PM
+
+Show me:
+
