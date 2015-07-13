@@ -33,4 +33,14 @@ Time Begin:
 2:22PM
 
 Show me:
+* add contact from call-log => call-information => create-new-contact displays odd user flow: 'Communications; Communications; || Use from now on'
+- https://bugzilla.mozilla.org/show_bug.cgi?id=1183383
+-- [Aries][Dialer] Adding a contact from a listed number in Call Log will display placeholder UI in Dropdown Dialog
+* created new contact with names, phone number and gif contact photo
+- can make calls
+- photo displays
+- photo flickers on entering call/hold: https://bugzilla.mozilla.org/show_bug.cgi?id=1111547 prev bug
 
+New Bugs: 2 -- http://mzl.la/1O86l4g
+Previous: 1 -- https://bugzil.la/1111547
+Workflow consisted of smoke, automation and developing this exploratory system earlier. More time should provide more results.
